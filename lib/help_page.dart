@@ -6,13 +6,8 @@ import 'login_page.dart';
 class HelpPage extends StatelessWidget {
   // Fungsi untuk logout dan menghapus session
   void _logout(BuildContext context) async {
-    // Mengambil instance SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    // Menghapus session dengan menghapus key 'isLoggedIn'
     await prefs.clear();
-
-    // Mengarahkan kembali ke halaman login
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => LoginPage()),
@@ -21,26 +16,53 @@ class HelpPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(20.0),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFFE0C3FC), Color(0xFF8EC5FC)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Judul dan deskripsi cara penggunaan aplikasi
-          Text(
-            'Cara Penggunaan Aplikasi:',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          const Text(
+            '📘 Cara Penggunaan Aplikasi',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.deepPurple,
+            ),
           ),
-          SizedBox(height: 10),
-          Text('1. Pilih menu sesuai dengan kebutuhan Anda.'),
-          Text('2. Untuk menghitung, pilih menu yang relevan.'),
-          Text('3. Logout untuk keluar dari aplikasi.'),
-          SizedBox(height: 20),
-
-          // Tombol logout
-          ElevatedButton(
-            onPressed: () => _logout(context),
-            child: Text('Logout'),
+          const SizedBox(height: 20),
+          const Text(
+            '1. Pilih menu sesuai dengan kebutuhan Anda.\n'
+            '2. Untuk fitur-fitur seperti Stopwatch, Tracking LBS, dsb, tinggal tekan dan gunakan sesuai petunjuk.\n'
+            '3. Tekan tombol Logout di bawah ini untuk keluar dari aplikasi.',
+            style: TextStyle(fontSize: 16, color: Colors.black87),
+          ),
+          const SizedBox(height: 40),
+          Center(
+            child: ElevatedButton.icon(
+              onPressed: () => _logout(context),
+              icon: const Icon(Icons.logout),
+              label: const Text(
+                'Logout',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepPurple,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 30.0, vertical: 15.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+              ),
+            ),
           ),
         ],
       ),

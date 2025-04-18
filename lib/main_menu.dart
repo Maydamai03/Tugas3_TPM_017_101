@@ -9,62 +9,88 @@ import 'jenis_bilangan.dart';
 class MainMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF7F00FF), Color(0xFFE100FF)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildMenuButton(
+                context,
+                label: "Stopwatch",
+                icon: Icons.timer,
+                page: StopwatchPage(),
+              ),
+              _buildMenuButton(
+                context,
+                label: "Jenis Bilangan",
+                icon: Icons.calculate,
+                page: JenisBilanganPage(),
+              ),
+              _buildMenuButton(
+                context,
+                label: "Tracking LBS",
+                icon: Icons.location_on,
+                page: TrackingLbsPage(),
+              ),
+              _buildMenuButton(
+                context,
+                label: "Konversi Waktu",
+                icon: Icons.access_time,
+                page: KonversiWaktuPage(),
+              ),
+              _buildMenuButton(
+                context,
+                label: "Situs Rekomendasi",
+                icon: Icons.link,
+                page: SitusRekomendasiPage(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMenuButton(BuildContext context,
+      {required String label, required IconData icon, required Widget page}) {
     return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          ElevatedButton(
-            onPressed: () {
-              // Aksi untuk menu Stopwatch
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => StopwatchPage()),
-              );
-            },
-            child: Text('Stopwatch'),
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: SizedBox(
+        width: double.infinity,
+        height: 55,
+        child: ElevatedButton.icon(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => page),
+            );
+          },
+          icon: Icon(icon),
+          label: Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              // Aksi untuk menu Jenis Bilangan
-               Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => JenisBilanganPage()),
-              );
-            },
-            child: Text('Jenis Bilangan'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.white,
+            foregroundColor: const Color(0xFF7F00FF),
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              // Aksi untuk menu Tracking LBS
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TrackingLbsPage()),
-              );
-            },
-            child: Text('Tracking LBS'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // Aksi untuk menu Konversi Waktu
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => KonversiWaktuPage()),
-              );
-            },
-            child: Text('Konversi Waktu'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // Aksi untuk menu Daftar Situs Rekomendasi
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SitusRekomendasiPage()),
-              );
-            },
-            child: Text('Situs Rekomendasi'),
-          ),
-        ],
+        ),
       ),
     );
   }
