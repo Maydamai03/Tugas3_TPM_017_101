@@ -12,7 +12,7 @@ class MainMenu extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF7F00FF), Color(0xFFE100FF)],
+          colors: [Color(0xFFE0C3FC), Color(0xFF8EC5FC)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -84,7 +84,7 @@ class MainMenu extends StatelessWidget {
           ),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.white,
-            foregroundColor: const Color(0xFF7F00FF),
+            foregroundColor: const Color.fromARGB(255, 81, 62, 100),
             elevation: 4,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),

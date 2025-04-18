@@ -1,5 +1,6 @@
 // lib/pages/help_page.dart
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'login_page.dart';
 
@@ -27,37 +28,67 @@ class HelpPage extends StatelessWidget {
         ),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text(
-            '📘 Cara Penggunaan Aplikasi',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.deepPurple,
+          Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            '1. Pilih menu sesuai dengan kebutuhan Anda.\n'
-            '2. Untuk fitur-fitur seperti Stopwatch, Tracking LBS, dsb, tinggal tekan dan gunakan sesuai petunjuk.\n'
-            '3. Tekan tombol Logout di bawah ini untuk keluar dari aplikasi.',
-            style: TextStyle(fontSize: 16, color: Colors.black87),
+            color: Colors.white.withOpacity(0.9),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '📘 Cara Penggunaan Aplikasi',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepPurple,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    '• Gunakan menu di bawah untuk navigasi antara Beranda, Daftar Anggota, dan Bantuan.\n\n'
+                    '• Pada halaman Beranda, Anda dapat mengakses berbagai fitur seperti Stopwatch, Tracking LBS, dan lainnya.\n\n'
+                    '• Tekan tombol Logout jika Anda ingin keluar dari aplikasi dan menghapus sesi login.',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: const Color.fromARGB(255, 56, 43, 70),
+                      height: 1.6,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
           const SizedBox(height: 40),
           Center(
             child: ElevatedButton.icon(
               onPressed: () => _logout(context),
-              icon: const Icon(Icons.logout),
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.amber,
+              ),
               label: const Text(
                 'Logout',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepPurple,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 30.0, vertical: 15.0),
+                  horizontal: 30.0,
+                  vertical: 15.0,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.0),
                 ),

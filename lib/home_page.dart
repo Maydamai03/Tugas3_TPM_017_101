@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tugas3_tpm/daftar_anggota.dart';
 import 'main_menu.dart';
 import 'help_page.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -18,21 +19,24 @@ class _HomePageState extends State<HomePage> {
     HelpPage(), // Halaman Bantuan
   ];
 
-  final List<String> _titles = [
-    'Beranda',
-    'Daftar Anggota',
-    'Bantuan',
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(_titles[_currentIndex]),
+        title: Text(
+          'OurAPP',
+          style: GoogleFonts.poppins(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Color.fromARGB(255, 81, 62, 100),
+            letterSpacing: 0.5,
+          ),
+        ),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.8),
+        backgroundColor:
+            const Color.fromARGB(255, 255, 255, 255).withOpacity(0.8),
       ),
       body: Container(
         decoration: BoxDecoration(

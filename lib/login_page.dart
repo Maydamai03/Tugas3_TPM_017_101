@@ -13,7 +13,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   void _login() async {
-    if (_usernameController.text == "admin" && _passwordController.text == "123") {
+    if (_usernameController.text == "admin" &&
+        _passwordController.text == "123") {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
 
@@ -55,9 +56,8 @@ class _LoginPageState extends State<LoginPage> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              const Color.fromARGB(255, 20, 13, 23),
-              const Color.fromARGB(255, 44, 3, 68),
-              const Color.fromARGB(255, 177, 75, 236)
+              Colors.deepPurple.shade700,
+              Colors.deepPurple.shade200,
             ],
           ),
         ),
@@ -65,7 +65,8 @@ class _LoginPageState extends State<LoginPage> {
           child: Card(
             color: const Color.fromARGB(255, 255, 255, 255),
             elevation: 5,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: Padding(
               padding: EdgeInsets.all(20),
               child: SizedBox(
@@ -119,7 +120,8 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: _login,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(255, 84, 24, 92),
-                        foregroundColor: const Color.fromARGB(255, 255, 255, 255),
+                        foregroundColor:
+                            const Color.fromARGB(255, 255, 255, 255),
                         minimumSize: Size(double.infinity, 50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
