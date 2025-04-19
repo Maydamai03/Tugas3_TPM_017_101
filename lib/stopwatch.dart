@@ -10,17 +10,19 @@ class StopwatchPage extends StatefulWidget {
 class _StopwatchPageState extends State<StopwatchPage> {
   late Stopwatch _stopwatch;
   late Timer _timer;
-  String _time = '00:00:00';
+  String _time = '00:00:00,00'; // Ubah nilai awal ke format yang diinginkan
   bool _isRunning = false;
+  List<String> _laps = []; // List untuk menyimpan lap times
+  Duration _lastLapTime = Duration.zero; // Waktu lap terakhir
 
   @override
   void initState() {
     super.initState();
     _stopwatch = Stopwatch();
-    _timer = Timer.periodic(Duration(seconds: 1), _updateTime);
+    _timer = Timer.periodic(Duration(milliseconds: 10), _updateTime); // Interval lebih cepat
   }
 
-  // Update time setiap detik
+  // Update time setiap 10 milidetik
   void _updateTime(Timer timer) {
     if (_stopwatch.isRunning) {
       setState(() {
@@ -29,12 +31,13 @@ class _StopwatchPageState extends State<StopwatchPage> {
     }
   }
 
-  // Format durasi waktu
+  // Format durasi waktu dengan milidetik
   String _formatDuration(Duration duration) {
     int hours = duration.inHours;
     int minutes = duration.inMinutes % 60;
     int seconds = duration.inSeconds % 60;
-    return '${_pad(hours)}:${_pad(minutes)}:${_pad(seconds)}';
+    int milliseconds = (duration.inMilliseconds % 1000) ~/ 10; // Ambil 2 digit milidetik
+    return '${_pad(hours)}:${_pad(minutes)}:${_pad(seconds)},${_pad(milliseconds)}';
   }
 
   // Menambahkan angka 0 jika bilangan kurang dari 10
@@ -54,12 +57,24 @@ class _StopwatchPageState extends State<StopwatchPage> {
     });
   }
 
+  // Tambahkan waktu lap
+  void _addLap() {
+    setState(() {
+      final currentLapTime = _stopwatch.elapsed - _lastLapTime; // Hitung selisih waktu lap
+      _laps.add(_formatDuration(currentLapTime)); // Tambahkan waktu lap ke list
+      _lastLapTime = _stopwatch.elapsed; // Perbarui waktu lap terakhir
+    });
+  }
+
   // Reset stopwatch
   void _resetStopwatch() {
     setState(() {
-      _stopwatch.reset();
-      _time = '00:00:00';
-      _isRunning = false;
+      _stopwatch.stop(); // Hentikan stopwatch
+      _stopwatch.reset(); // Reset stopwatch
+      _time = '00:00:00,00'; // Set waktu ke format awal
+      _isRunning = false; // Set status ke tidak berjalan
+      _laps.clear(); // Hapus semua lap times
+      _lastLapTime = Duration.zero; // Reset waktu lap terakhir
     });
   }
 
@@ -93,11 +108,29 @@ class _StopwatchPageState extends State<StopwatchPage> {
                 ),
                 SizedBox(width: 20),
                 ElevatedButton(
-                  onPressed: _resetStopwatch,
-                  child: Text('Reset'),
+                  onPressed: _isRunning ? _addLap : _resetStopwatch, // Lap saat berjalan, Reset saat berhenti
+                  child: Text(_isRunning ? 'Lap' : 'Reset'),
                 ),
               ],
             ),
+            SizedBox(height: 20),
+            if (_laps.isNotEmpty) ...[
+              Text(
+                'Lap Times:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _laps.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text('Lap ${index + 1}: ${_laps[index]}'),
+                    );
+                  },
+                ),
+              ),
+            ],
           ],
         ),
       ),

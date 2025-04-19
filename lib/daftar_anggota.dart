@@ -46,14 +46,14 @@ class MemberPage extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Color.fromARGB(
-                        255, 81, 62, 100), // ← ubah warna font di sini
+                        255, 81, 62, 100), 
                   ),
                 ),
                 subtitle: Text(
                   'NIM: ${member['nim']}',
                   style: TextStyle(
                     color: Color.fromARGB(
-                        255, 81, 62, 100), // ← ubah warna font di sini juga
+                        255, 81, 62, 100), 
                   ),
                 ),
               ),
