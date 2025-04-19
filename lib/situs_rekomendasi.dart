@@ -1,6 +1,6 @@
-// lib/pages/situs_rekomendasi_page.dart
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../sites_data.dart'; // Import file data situs
 
 class SitusRekomendasiPage extends StatefulWidget {
   @override
@@ -8,32 +8,43 @@ class SitusRekomendasiPage extends StatefulWidget {
 }
 
 class _SitusRekomendasiPageState extends State<SitusRekomendasiPage> {
-  // Daftar situs rekomendasi
-  List<Map<String, String>> _sites = [
-    {
-      'name': 'Flutter',
-      'url': 'https://flutter.dev',
-      'image': 'https://flutter.dev/assets/homepage/carousel/slide_1-bg-4e74b66e45fbcd0e0b50561e34627ef88d5b3c3796a17f9f52098c17c47d7a58.png',
-    },
-    {
-      'name': 'Dart',
-      'url': 'https://dart.dev',
-      'image': 'https://dart.dev/assets/shared/dart-logo-for-shares.png?2',
-    },
-    {
-      'name': 'Google',
-      'url': 'https://www.google.com',
-      'image': 'https://www.google.com/images/branding/googlelogo/1x/googlelogo-32x32.png',
-    },
-  ];
+  List<Map<String, String>> _sites = List.from(sites); // Copy agar bisa dimodifikasi
+  Set<String> _favoriteUrls = {}; // Simpan yang sudah favorit pakai URL
+  final ScrollController _scrollController = ScrollController();
 
-  // Fungsi untuk membuka link situs
   Future<void> _launchURL(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
       throw 'Tidak dapat membuka URL: $url';
     }
+  }
+
+  void _toggleFavorite(int index) {
+    setState(() {
+      String url = _sites[index]['url'] ?? '';
+      bool isFav = _favoriteUrls.contains(url);
+
+      if (isFav) {
+        _favoriteUrls.remove(url);
+      } else {
+        _favoriteUrls.add(url);
+        // Pindahkan item ke paling atas
+        final item = _sites.removeAt(index);
+        _sites.insert(0, item);
+
+        // Scroll ke atas biar kelihatan
+        _scrollController.animateTo(
+          0.0,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${item['name']} ditandai sebagai favorit!')),
+        );
+      }
+    });
   }
 
   @override
@@ -43,23 +54,24 @@ class _SitusRekomendasiPageState extends State<SitusRekomendasiPage> {
         title: Text('Situs Rekomendasi'),
       ),
       body: ListView.builder(
+        controller: _scrollController,
         itemCount: _sites.length,
         itemBuilder: (context, index) {
           var site = _sites[index];
+          bool isFav = _favoriteUrls.contains(site['url']);
+
           return Card(
             margin: EdgeInsets.all(10),
             child: ListTile(
-              leading: Image.network(site['image'] ?? '', width: 50, height: 50),
+              leading: Image.asset(site['image'] ?? '', width: 50, height: 50),
               title: Text(site['name'] ?? 'Nama Situs'),
               subtitle: Text(site['url'] ?? 'URL Situs'),
               trailing: IconButton(
-                icon: Icon(Icons.favorite_border),
-                onPressed: () {
-                  // Aksi favorit (tandai sebagai favorit)
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${site['name']} telah ditandai sebagai favorit!')),
-                  );
-                },
+                icon: Icon(
+                  isFav ? Icons.favorite : Icons.favorite_border,
+                  color: isFav ? Colors.red : null,
+                ),
+                onPressed: () => _toggleFavorite(index),
               ),
               onTap: () => _launchURL(site['url'] ?? ''),
             ),

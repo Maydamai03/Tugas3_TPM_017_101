@@ -9,11 +9,11 @@ class KonversiWaktuPage extends StatefulWidget {
 class _KonversiWaktuPageState extends State<KonversiWaktuPage> {
   TextEditingController _controller = TextEditingController();
   String _result = '';
+  String selectedTarget = 'Semua';
 
-  // Fungsi untuk konversi tahun ke jam, menit, detik
   void _convertTime() {
     setState(() {
-      _result = ''; // Reset result jika ada input baru
+      _result = '';
 
       String inputText = _controller.text;
       if (inputText.isEmpty) {
@@ -22,13 +22,32 @@ class _KonversiWaktuPageState extends State<KonversiWaktuPage> {
       }
 
       double years = double.tryParse(inputText) ?? 0;
-      
-      // Mengonversi tahun ke jam, menit, detik
-      double hours = years * 365 * 24; // 1 tahun = 365 hari * 24 jam
-      double minutes = hours * 60; // 1 jam = 60 menit
-      double seconds = minutes * 60; // 1 menit = 60 detik
+      double months = years * 12;
+      double days = years * 365;
+      double hours = days * 24;
+      double minutes = hours * 60;
+      double seconds = minutes * 60;
 
-      _result = '$years tahun = $hours jam, $minutes menit, $seconds detik';
+      switch (selectedTarget) {
+        case 'Bulan':
+          _result = '$years tahun = $months bulan';
+          break;
+        case 'Hari':
+          _result = '$years tahun = $days hari';
+          break;
+        case 'Jam':
+          _result = '$years tahun = $hours jam';
+          break;
+        case 'Menit':
+          _result = '$years tahun = $minutes menit';
+          break;
+        case 'Detik':
+          _result = '$years tahun = $seconds detik';
+          break;
+        default:
+          _result =
+              '$years tahun = $months bulan, $days hari, $hours jam, $minutes menit, $seconds detik';
+      }
     });
   }
 
@@ -43,7 +62,6 @@ class _KonversiWaktuPageState extends State<KonversiWaktuPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            // Input field untuk tahun
             TextField(
               controller: _controller,
               keyboardType: TextInputType.number,
@@ -53,13 +71,33 @@ class _KonversiWaktuPageState extends State<KonversiWaktuPage> {
               ),
             ),
             SizedBox(height: 20),
-            // Tombol konversi
+            DropdownButton<String>(
+              value: selectedTarget,
+              items: <String>[
+                'Semua',
+                'Bulan',
+                'Hari',
+                'Jam',
+                'Menit',
+                'Detik'
+              ].map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text('Konversi ke $value'),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedTarget = value!;
+                });
+              },
+            ),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: _convertTime,
               child: Text('Konversi'),
             ),
             SizedBox(height: 20),
-            // Menampilkan hasil konversi
             Text(
               _result,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
