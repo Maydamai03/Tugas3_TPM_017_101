@@ -15,6 +15,65 @@ class HelpPage extends StatelessWidget {
     );
   }
 
+  final List<Map<String, dynamic>> helpItems = [
+    {
+      'title': 'Beranda',
+      'steps': [
+        'Pilih tab "Beranda" di bagian bawah aplikasi.',
+        'Akses fitur seperti Stopwatch, Jenis Bilangan, LBS, dan lainnya.',
+        'Klik menu yang ingin digunakan.'
+      ]
+    },
+    {
+      'title': 'Daftar Anggota',
+      'steps': [
+        'Pilih tab "Anggota".',
+        'Lihat daftar anggota tim beserta NIM dan foto.'
+      ]
+    },
+    {
+      'title': 'Stopwatch',
+      'steps': [
+        'Buka fitur Stopwatch di halaman Beranda.',
+        'Klik tombol Start untuk mulai menghitung waktu.',
+        'Gunakan tombol lap untuk membagi waktu beserta lap nya',
+        'Gunakan tombol Stop dan Reset untuk mengatur ulang.'
+      ]
+    },
+    {
+      'title': 'Jenis Bilangan',
+      'steps': [
+        'Pilih fitur Jenis Bilangan dari Beranda.',
+        'Masukkan angka yang ingin dianalisis.',
+        'Sistem akan menampilkan apakah angka tersebut prima, desimal, positif/negatif, atau bilangan cacah.'
+      ]
+    },
+    {
+      'title': 'Tracking Lokasi (LBS)',
+      'steps': [
+        'Pilih fitur LBS dari Beranda.',
+        'Izinkan aplikasi mengakses lokasi.',
+        'Lihat posisi Anda di peta secara real-time.'
+      ]
+    },
+    {
+      'title': 'Konversi Waktu',
+      'steps': [
+        'Pilih fitur Konversi Waktu dari Beranda.',
+        'Masukkan jumlah tahun yang ingin dikonversi.',
+        'Hasil akan ditampilkan dalam jam, menit, dan detik.',
+      ]
+    },
+    {
+      'title': 'Situs Rekomendasi',
+      'steps': [
+        'Buka fitur Situs Rekomendasi dari Beranda.',
+        'Lihat daftar situs-situs yang direkomendasikan.',
+        'Tambahkan situs ke favorit untuk akses cepat.'
+      ]
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,69 +89,79 @@ class HelpPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            color: Colors.white.withOpacity(0.9),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '📘 Cara Penggunaan Aplikasi',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.deepPurple,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    '• Gunakan menu di bawah untuk navigasi antara Beranda, Daftar Anggota, dan Bantuan.\n\n'
-                    '• Pada halaman Beranda, Anda dapat mengakses berbagai fitur seperti Stopwatch, Tracking LBS, dan lainnya.\n\n'
-                    '• Tekan tombol Logout jika Anda ingin keluar dari aplikasi dan menghapus sesi login.',
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: const Color.fromARGB(255, 56, 43, 70),
-                      height: 1.6,
-                      letterSpacing: 0.3,
-                    ),
-                  ),
-                ],
-              ),
+          Text(
+            '📘 Informasi & Panduan Penggunaan',
+            style: GoogleFonts.poppins(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.deepPurple,
             ),
           ),
-          const SizedBox(height: 40),
-          Center(
-            child: ElevatedButton.icon(
-              onPressed: () => _logout(context),
-              icon: const Icon(
-                Icons.logout,
-                color: Colors.amber,
-              ),
-              label: const Text(
-                'Logout',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+          const SizedBox(height: 20),
+          Expanded(
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: helpItems.length,
+                    itemBuilder: (context, index) {
+                      final item = helpItems[index];
+                      return Card(
+                        elevation: 3,
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: ExpansionTile(
+                          title: Text(
+                            item['title'],
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          children: List.generate(
+                            item['steps'].length,
+                            (i) => ListTile(
+                              leading: const Icon(
+                                Icons.check_circle_outline,
+                                color: Colors.deepPurple,
+                              ),
+                              title: Text(
+                                item['steps'][i],
+                                style: GoogleFonts.poppins(fontSize: 14),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 30.0,
-                  vertical: 15.0,
+                const SizedBox(height: 20),
+                ElevatedButton.icon(
+                  onPressed: () => _logout(context),
+                  icon: const Icon(Icons.logout, color: Colors.white),
+                  label: const Text(
+                    'Logout',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30.0,
+                      vertical: 15.0,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-              ),
+              ],
             ),
           ),
         ],

@@ -1,13 +1,13 @@
 const List<Map<String, String>> sites = [
   {
-    'name': 'Flutter',
-    'url': 'https://flutter.dev',
-    'image': 'img/images.jpg',
+    'name': 'Yutub',
+    'url': 'https://www.youtube.com/',
+    'image': 'img/yt.webp',
   },
   {
-    'name': 'Dart',
-    'url': 'https://dart.dev',
-    'image': 'img/images.jpg',
+    'name': 'XCash Gimang',
+    'url': 'https://xcashshop.com/?gad_source=1&gbraid=0AAAAAo-Or8KZM1nElYefD-abHrpLlq8DO&gclid=CjwKCAjwk43ABhBIEiwAvvMEBwjztIZ92oZiTXMOfUTb1VEloCHtHBPVhYpvIXGOXbhQxC2UgP_vqxoCvs4QAvD_BwE',
+    'image': 'img/xcash.jpg',
   },
   {
     'name': 'Google',
