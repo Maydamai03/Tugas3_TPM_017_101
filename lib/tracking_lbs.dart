@@ -1,6 +1,7 @@
-// lib/pages/tracking_lbs_page.dart
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class TrackingLbsPage extends StatefulWidget {
   @override
@@ -9,24 +10,68 @@ class TrackingLbsPage extends StatefulWidget {
 
 class _TrackingLbsPageState extends State<TrackingLbsPage> {
   String _locationMessage = "Menunggu lokasi...";
+  LatLng? _currentLatLng; // Tambahkan untuk menyimpan koordinat lokasi
+  final MapController _mapController =
+      MapController(); // Tambahkan MapController
 
-  // Fungsi untuk meminta izin lokasi dan mendapatkan lokasi saat ini
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation(); // Panggil fungsi untuk mendapatkan lokasi saat widget diinisialisasi
+  }
+
   Future<void> _getCurrentLocation() async {
-    // Memeriksa izin akses lokasi
-    LocationPermission permission = await Geolocator.requestPermission();
+    bool serviceEnabled;
+    LocationPermission permission;
 
-    if (permission == LocationPermission.denied) {
+    // Cek apakah layanan lokasi aktif
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
       setState(() {
-        _locationMessage = "Akses lokasi ditolak. Coba lagi!";
+        _locationMessage = "Layanan lokasi tidak aktif. Silakan aktifkan GPS.";
       });
-    } else {
-      // Mendapatkan lokasi pengguna
+      return;
+    }
+
+    // Cek dan minta izin lokasi
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        setState(() {
+          _locationMessage = "Izin lokasi ditolak.";
+        });
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      setState(() {
+        _locationMessage =
+            "Izin lokasi ditolak permanen. Aktifkan dari pengaturan.";
+      });
+      return;
+    }
+
+    try {
+      // Ambil lokasi dengan akurasi tinggi
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
+
       setState(() {
         _locationMessage =
-            "Latitude: ${position.latitude}, Longitude: ${position.longitude}";
+            "Lokasi Terkini:\nLatitude: ${position.latitude}\nLongitude: ${position.longitude}";
+        _currentLatLng = LatLng(position.latitude, position.longitude);
+      });
+
+// Pindahkan map setelah frame build selesai
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _mapController.move(_currentLatLng!, 15.0);
+      });
+    } catch (e) {
+      setState(() {
+        _locationMessage = "Gagal mendapatkan lokasi: $e";
       });
     }
   }
@@ -42,17 +87,45 @@ class _TrackingLbsPageState extends State<TrackingLbsPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            // Menampilkan pesan lokasi
             Text(
               _locationMessage,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 20),
-            // Tombol untuk mendapatkan lokasi
-            ElevatedButton(
-              onPressed: _getCurrentLocation,
-              child: Text('Dapatkan Lokasi Saat Ini'),
+            // Tambahkan widget peta
+            Expanded(
+              child: _currentLatLng == null
+                  ? Center(
+                      child: Text('Peta akan muncul setelah lokasi diperoleh'))
+                  : FlutterMap(
+                      mapController: _mapController, // Tambahkan MapController
+                      options: MapOptions(
+                        center: _currentLatLng,
+                        zoom: 15.0,
+                      ),
+                      children: [
+                        TileLayer(
+                          urlTemplate:
+                              'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          subdomains: ['a', 'b', 'c'],
+                        ),
+                        MarkerLayer(
+                          markers: [
+                            Marker(
+                              point: _currentLatLng!,
+                              width: 80,
+                              height: 80,
+                              child: Icon(
+                                Icons.location_pin,
+                                color: Colors.red,
+                                size: 40,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
             ),
           ],
         ),
