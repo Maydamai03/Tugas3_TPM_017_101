@@ -9,31 +9,26 @@ class TrackingLbsPage extends StatefulWidget {
 }
 
 class _TrackingLbsPageState extends State<TrackingLbsPage> {
-  String _locationMessage = "Menunggu lokasi...";
-  LatLng? _currentLatLng; // Tambahkan untuk menyimpan koordinat lokasi
-  final MapController _mapController =
-      MapController(); // Tambahkan MapController
-
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentLocation(); // Panggil fungsi untuk mendapatkan lokasi saat widget diinisialisasi
-  }
+  String _locationMessage = "Tekan tombol di bawah untuk cek lokasi Anda.";
+  LatLng? _currentLatLng;
+  final MapController _mapController = MapController();
 
   Future<void> _getCurrentLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Cek apakah layanan lokasi aktif
+    setState(() {
+      _locationMessage = "Mengecek lokasi...";
+    });
+
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       setState(() {
-        _locationMessage = "Layanan lokasi tidak aktif. Silakan aktifkan GPS.";
+        _locationMessage = "Layanan lokasi tidak aktif. Aktifkan GPS.";
       });
       return;
     }
 
-    // Cek dan minta izin lokasi
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -48,13 +43,12 @@ class _TrackingLbsPageState extends State<TrackingLbsPage> {
     if (permission == LocationPermission.deniedForever) {
       setState(() {
         _locationMessage =
-            "Izin lokasi ditolak permanen. Aktifkan dari pengaturan.";
+            "Izin lokasi ditolak permanen. Aktifkan melalui pengaturan.";
       });
       return;
     }
 
     try {
-      // Ambil lokasi dengan akurasi tinggi
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
@@ -65,7 +59,6 @@ class _TrackingLbsPageState extends State<TrackingLbsPage> {
         _currentLatLng = LatLng(position.latitude, position.longitude);
       });
 
-// Pindahkan map setelah frame build selesai
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _mapController.move(_currentLatLng!, 15.0);
       });
@@ -81,25 +74,40 @@ class _TrackingLbsPageState extends State<TrackingLbsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Tracking LBS'),
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
               _locationMessage,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 20),
-            // Tambahkan widget peta
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: _getCurrentLocation,
+              icon: Icon(Icons.my_location),
+              label: Text('Cek Lokasi Anda'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepPurple,
+                foregroundColor: Colors.white,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
             Expanded(
               child: _currentLatLng == null
                   ? Center(
-                      child: Text('Peta akan muncul setelah lokasi diperoleh'))
+                      child: Text('Peta akan muncul setelah lokasi diperoleh.'),
+                    )
                   : FlutterMap(
-                      mapController: _mapController, // Tambahkan MapController
+                      mapController: _mapController,
                       options: MapOptions(
                         center: _currentLatLng,
                         zoom: 15.0,

@@ -19,7 +19,8 @@ class _StopwatchPageState extends State<StopwatchPage> {
   void initState() {
     super.initState();
     _stopwatch = Stopwatch();
-    _timer = Timer.periodic(Duration(milliseconds: 10), _updateTime); // Interval lebih cepat
+    _timer = Timer.periodic(
+        Duration(milliseconds: 10), _updateTime); // Interval lebih cepat
   }
 
   // Update time setiap 10 milidetik
@@ -36,7 +37,8 @@ class _StopwatchPageState extends State<StopwatchPage> {
     int hours = duration.inHours;
     int minutes = duration.inMinutes % 60;
     int seconds = duration.inSeconds % 60;
-    int milliseconds = (duration.inMilliseconds % 1000) ~/ 10; // Ambil 2 digit milidetik
+    int milliseconds =
+        (duration.inMilliseconds % 1000) ~/ 10; // Ambil 2 digit milidetik
     return '${_pad(hours)}:${_pad(minutes)}:${_pad(seconds)},${_pad(milliseconds)}';
   }
 
@@ -60,7 +62,8 @@ class _StopwatchPageState extends State<StopwatchPage> {
   // Tambahkan waktu lap
   void _addLap() {
     setState(() {
-      final currentLapTime = _stopwatch.elapsed - _lastLapTime; // Hitung selisih waktu lap
+      final currentLapTime =
+          _stopwatch.elapsed - _lastLapTime; // Hitung selisih waktu lap
       _laps.add(_formatDuration(currentLapTime)); // Tambahkan waktu lap ke list
       _lastLapTime = _stopwatch.elapsed; // Perbarui waktu lap terakhir
     });
@@ -108,7 +111,9 @@ class _StopwatchPageState extends State<StopwatchPage> {
                 ),
                 SizedBox(width: 20),
                 ElevatedButton(
-                  onPressed: _isRunning ? _addLap : _resetStopwatch, // Lap saat berjalan, Reset saat berhenti
+                  onPressed: _isRunning
+                      ? _addLap
+                      : _resetStopwatch, // Lap saat berjalan, Reset saat berhenti
                   child: Text(_isRunning ? 'Lap' : 'Reset'),
                 ),
               ],
